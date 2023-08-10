@@ -32,7 +32,8 @@ const createTables = async () => {
             id SERIAL PRIMARY KEY,
             email VARCHAR(255) UNIQUE NOT NULL,
             name VARCHAR(255) NOT NULL,
-            password VARCHAR(255) NOT NULL
+            password VARCHAR(255) NOT NULL,
+            address VARCHAR(255) NOT NULL
         );
         CREATE TABLE products (
             id SERIAL PRIMARY KEY,
@@ -56,6 +57,7 @@ const createTables = async () => {
         );
         CREATE TABLE orders (
             id SERIAL PRIMARY KEY,
+            status VARCHAR(255) DEFAULT 'pending',
             "purchasedBy" INTEGER REFERENCES users(id),
             "productId" INTEGER REFERENCES products(id),
             quantity INTEGER
@@ -67,6 +69,8 @@ const createTables = async () => {
             description TEXT
         );
         `);
+            //add admin table
+            //orders: price 
 
         console.log("Finished building tables!")
     } catch (error) {

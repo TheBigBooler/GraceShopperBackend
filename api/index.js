@@ -14,11 +14,21 @@ router.get('/health', async (req, res, next) => {
 const usersRouter = require("./users");
 router.use("/users", usersRouter);
 
-//follow same structure for other routes below
+//products routes
+const productsRouter = require("./products");
+router.use("/products", productsRouter);
 
+//cart routes
+const cartRouter = require("./cart");
+router.use("/cart", cartRouter);
 
+//orders routes
+const ordersRouter = require("./orders");
+router.use("/orders", ordersRouter);
 
-
+//reviews routes
+const reviewsRouter = require("./reviews");
+router.use("/reviews", reviewsRouter);
 
 
 //export routes!
