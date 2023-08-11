@@ -7,6 +7,7 @@ const dropTables = async () => {
   console.log("Dropping tables...");
 
   await client.query(`
+  DROP TABLE IF EXISTS admins;
   DROP TABLE IF EXISTS reviews;
   DROP TABLE IF EXISTS order_products;
   DROP TABLE IF EXISTS orders;
@@ -76,8 +77,13 @@ const createTables = async () => {
             "productId" INTEGER REFERENCES products(id),
             description TEXT
         );
+        CREATE TABLE admins (
+            id SERIAL PRIMARY KEY,
+            username VARCHAR(255) UNIQUE NOT NULL,
+            password VARCHAR(255) NOT NULL
+        )
         `);
-            //add admin table
+           
 
         console.log("Finished building tables!")
     } catch (error) {
@@ -87,7 +93,7 @@ const createTables = async () => {
 }
 
 //reseed database with dummy data
-const {createInitialUsers, createInitialProducts} = require('./createData')
+const {createInitialUsers, createInitialProducts, createInitialOrders } = require('./createData')
 
 const rebuildDB = async () => {
     try {
@@ -95,6 +101,7 @@ const rebuildDB = async () => {
         await createTables();
         await createInitialUsers();
         await createInitialProducts();
+        await createInitialOrders();
     } catch (error) {
         console.error("Error during rebuild")
         console.log(error)
