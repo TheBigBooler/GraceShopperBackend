@@ -4,6 +4,9 @@ const createInitialUsers = async () => {
     console.log("creating users...");
     try {
         await client.query(`
+        INSERT INTO admins (username, password)
+        VALUES ('admin', 'admin');
+
         INSERT INTO users (email, name, password, address)
         VALUES ('james@james.com', 'james', 'booler', '123 bool street');
 
