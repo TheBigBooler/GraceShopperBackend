@@ -4,10 +4,10 @@ const client = require("./client");
 async function register({email, name, password }) {
   try {
     const {rows: [user]} = await client.query(`
-    INSERT INTO users (email, name, password)
-    VALUES ($1, $2, $3)
+    INSERT INTO users (email, name, password, address)
+    VALUES ($1, $2, $3, $4)
     ON CONFLICT (email) DO NOTHING RETURNING id, email;`,
-    [email, name, password]);
+    [email, name, password, address]);
     return user;
   } catch (error) {
     return (error);

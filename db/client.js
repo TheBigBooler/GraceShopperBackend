@@ -11,4 +11,4 @@ const client = new Pool({
   port: port,
 });
 
-module.exports = client;ju
+module.exports = client;
