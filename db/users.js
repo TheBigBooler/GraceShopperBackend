@@ -13,3 +13,15 @@ async function register({email, name, password }) {
     return (error);
   }
 }
+
+//Get user by email
+async function getUserByEmail(email) {
+try {
+  const { rows: [users] } = await client.query(
+    `
+    SELECT id, email FROM users WHERE id=$1;`,[userId]);
+  return user;
+} catch (error) {
+  return error;
+}
+}
