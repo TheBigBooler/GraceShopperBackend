@@ -10,6 +10,7 @@ const { register, getUserByEmail } = require('../db/users.js')
 
 //register user
 router.post('/register', async (req, res, next) => {
+    console.log(req.body)
     const { email, password } = req.body;
     //check for existing user first
     try {
