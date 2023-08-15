@@ -38,7 +38,7 @@ const decreaseInventory = async ({id, quantity}) => {
     }
 }
 
-//admin functions
+//admin functions *****************
 
 //add products to store
 const addProduct = async ({name, category, description, image, price, inventory}) => {
