@@ -1,7 +1,7 @@
 const client = require("./client");
 
 //Register function
-async function register({email, name, password }) {
+async function register({email, name, password, address}) {
   try {
     const {rows: [user]} = await client.query(`
     INSERT INTO users (email, name, password, address)
