@@ -68,6 +68,21 @@ const getUserById = async (userId) => {
     }
 }
 
+//get logged in user's information
+const getUserInfo = async (email) => {
+  try {
+    const {rows:[user]} = await client.query(`
+    SELECT id, email, name, address
+    FROM users
+    WHERE email=$1;`,
+    [email]
+    );
+    return user
+  } catch (error) {
+    return error
+  }
+}
+
 
 
 //exports
@@ -75,5 +90,6 @@ module.exports = {
     register,
     getUser,
     getUserById,
-    getUserByEmail
+    getUserByEmail,
+    getUserInfo
 }
