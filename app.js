@@ -45,13 +45,6 @@ app.use(async (req, res, next) => {
   }
 });
 
-app.use((req, res, next) => {
-  if (req.user) {
-    const user = req.user;
-    console.log("User is set", user);
-  }
-  next();
-});
 
 //sets user for verifying authentication
 app.use((req, res, next) => {
