@@ -3,7 +3,7 @@ const router = express.Router();
 const jwt = require("jsonwebtoken");
 //import any needed functions
 const { requireUser } = require("./utils.js");
-const { register, getUserByEmail } = require('../db/users.js')
+const { register, getUserByEmail, getUserInfo } = require('../db/users.js')
 
 
 //api/users/...
@@ -100,8 +100,19 @@ router.get('/:userId/cart', requireUser, async (req, res) => {
 })
 
 //get user's info
-router.get('/me', requireUser, async (req, res) => {
-    res.status(200).send(`get request made to users/me`)
+router.get('/me', requireUser, async (req, res, next) => {
+    if (!req.headers) {
+      next({
+        name: "NotLoggedIn",
+        message: "You must be logged in to view your profile"
+      })
+    }
+    try {
+      const userInfo = await getUserInfo(req.user.email)
+      res.status(200).send(userInfo)
+    } catch ({name, message}) {
+      next({name, message})
+    }
 })
 
 
