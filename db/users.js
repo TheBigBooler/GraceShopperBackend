@@ -19,7 +19,7 @@ async function getUserByEmail(email) {
 try {
   const { rows: [user] } = await client.query(
     `
-    SELECT id, email FROM users WHERE id=$1;`,[email]);
+    SELECT id, email, password FROM users WHERE email=$1;`,[email]);
   return user;
 } catch (error) {
   return error;
