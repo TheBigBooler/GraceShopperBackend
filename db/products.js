@@ -12,6 +12,18 @@ const getAllProducts = async () => {
     }
 }
 
+//get individual product
+const getProductById = async (productId) => {
+    try {
+        const {rows: [product]} = await client.query(`
+        SELECT * FROM products
+        WHERE id=${productId};`)
+        return product
+    } catch (error) {
+        return error
+    }
+}
+
 //get active products
 const getActiveProducts = async () => {
     try {
@@ -30,7 +42,7 @@ const decreaseInventory = async ({id, quantity}) => {
         const {rows: [purchasedProduct]} = await client.query(`
         UPDATE products
         SET inventory=(inventory-$1)
-        WHERE id=$2`,
+        WHERE id=$2;`,
         [quantity, id])
         return purchasedProduct
     } catch (error) {
@@ -49,7 +61,7 @@ const addProduct = async ({name, category, description, image, price, inventory}
           `
         INSERT INTO products (name, category, description, image, price, inventory)
         VALUES ($1, $2, $3, $4, $5, $6)
-        RETURNING *`,
+        RETURNING *;`,
           [name, category, description, image, price, inventory]
         );
             return product
@@ -96,5 +108,6 @@ module.exports = {
     addProduct,
     deleteProduct,
     changeProductInventory,
-    decreaseInventory
+    decreaseInventory,
+    getProductById
 }
