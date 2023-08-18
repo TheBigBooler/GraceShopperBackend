@@ -64,5 +64,5 @@ module.exports = {
     review,
     deleteReview,
     reviewByProduct,
-
+    reviewById
 }

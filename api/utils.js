@@ -11,4 +11,9 @@ const requireUser = (req, res, next) => {
   next();
 };
 
-module.exports = { requireUser };
+//middleware to check for admin
+const requireAdmin = (req, res, next) => {
+
+}
+
+module.exports = { requireUser, requireAdmin };
