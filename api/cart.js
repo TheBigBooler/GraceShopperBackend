@@ -40,17 +40,18 @@ router.delete("/:productId", (req, res) => {
 });
 
 //clear user's cart
-router.delete("/", requireUser, async (req, res, next) => {
-  const {userId} = req.user.id
-  if (!req.user) {
-    next({
-      name: "NotLoggedIn",
-      message: "You must be logged in to clear your cart"
-    })
-  }
+router.delete("/clear", requireUser, async (req, res, next) => {
+  const userId = req.user.id
   try {
     const deleteCart = await clearCart(userId)
-    return deleteCart
+    if (deleteCart) {
+    res.status(200).send("Cart successfully cleared")
+    } else {
+      next({
+        name: "CartError",
+        message: "Error clearing cart"
+      })
+    }
   } catch ({name, message}) {
     next({name, message})
   }
