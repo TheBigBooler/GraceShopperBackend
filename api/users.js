@@ -100,8 +100,8 @@ router.get('/me/orders', requireUser, async (req, res) => {
 })
 
 // get user's cart
-router.get('/:userId/cart', requireUser, async (req, res) => {
-    const { userId } = req.params;
+router.get('/me/cart', requireUser, async (req, res) => {
+    const userId = req.user.id;
     res.status(200).send(`get request made to users/${userId}/cart`)
 })
 
