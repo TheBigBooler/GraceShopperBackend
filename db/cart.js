@@ -36,7 +36,8 @@ const removeFromCart = async (id) => {
     try {
         const { rows: [removedProduct]} = await client.query(`
         DELETE FROM cart
-        WHERE id=${id};`)
+        WHERE id=${id}
+        RETURNING *;`)
 
         return removedProduct
     } catch (error) {
@@ -44,12 +45,13 @@ const removeFromCart = async (id) => {
     }
 }
 //change quantity of item in cart
-const updateCart = async ({id, quantity}) => {
+const updateCart = async (id, quantity) => {
     try {
         const {rows: [updatedProduct]} = await client.query(`
         UPDATE CART
         SET quantity=$1
-        WHERE id=$2;`,
+        WHERE id=$2
+        RETURNING quantity;`,
         [quantity, id])
         return updatedProduct
     } catch (error) {

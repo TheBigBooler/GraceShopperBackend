@@ -20,6 +20,11 @@ router.post('/:productId', requireUser, async (req, res, next) => {
           name: "AlreadyInCart",
           message: "That item is already in your cart, update it from your cart menu"
         })
+      } else if (quantity < 1) {
+        next({
+          name: "Cart Error",
+          message: "You must add a valid amount of an item to your cart"
+        })
       } else {
       const addedItem = await addToCart(userId, productId, quantity)
       res.status(200).send(addedItem)
@@ -30,17 +35,43 @@ router.post('/:productId', requireUser, async (req, res, next) => {
 })
 
 //update quantity of item in cart
-router.patch("/:productId", (req, res) => {
-  res.status(200).send(`patch request made to /cart/${req.params}`);
+router.patch("/:id", requireUser, async (req, res, next) => {
+  const {id} = req.params
+  const { quantity } = req.body
+  try {
+    if (quantity < 1) {
+      next({
+        name: "CartError",
+        message: "You can't put less than 1 of an item in your cart; remove it instead"
+      })
+    } else {
+    const changeQuantityInCart = await updateCart(id, quantity)
+    res.status(200).send(changeQuantityInCart)
+    }
+  } catch ({name, message}) {
+    next({name, message})
+  }
+  
 });
 
 //remove from cart
-router.delete("/:productId", (req, res) => {
-  res.status(200).send(`delete request made to /cart/${req.params}`);
+router.delete("/:id", requireUser, async (req, res, next) => {
+  const {id} = req.params
+  try {
+    const removedCartItem = await removeFromCart(id)
+    if (removedCartItem) {res.status(200).send(removedCartItem)
+    } else {
+  next({
+    name: "CartError",
+    message: "Error removing item from cart"
+  })}
+  } catch ({name, message}) {
+    next({name, message})
+  }
 });
 
 //clear user's cart
-router.delete("/clear", requireUser, async (req, res, next) => {
+router.delete("/", requireUser, async (req, res, next) => {
   const userId = req.user.id
   try {
     const deleteCart = await clearCart(userId)
