@@ -4,7 +4,7 @@ const client = require("./client");
 async function review({userId, orderId, productId, description}) {
     try {
     const {rows: [review]} = await client.query (`
-      INSERT INTO reviews (userId, orderId, productId, description) VALUES ($1, $2, $3, $4) RETURNING *;`,
+      INSERT INTO reviews ("userId", "orderId", "productId", description) VALUES ($1, $2, $3, $4) RETURNING *;`,
       [userId, orderId, productId, description]
     );
     return review;
@@ -34,7 +34,7 @@ async function deleteReview(id) {
 async function reviewByProduct(productId, review) {
     try{
         const { rows: [review] } = await client.query(
-            'SELECT * FROM reviews WHERE productId = $1;',
+            'SELECT * FROM reviews WHERE "productId" = $1;',
             [productId]
         );
         return review;
