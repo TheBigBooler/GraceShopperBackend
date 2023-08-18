@@ -1,11 +1,21 @@
 const express = require("express");
 const router = express.Router();
 const { requireUser } = require("./utils.js");
+const { addToCart,
+    removeFromCart,
+    clearCart,
+    updateCart } = require("../db/cart.js")
 
 
 //add items to cart
-router.post('/:productId', (req, res) => {
-    res.status(200).send(`post request made to /cart/${req.params}`);
+router.post('/:productId', async (req, res, next) => {
+    
+    try {
+      const addedItem = await addToCart(req.body)
+      return addedItem
+    } catch ({name, message}) {
+      next({name, message})
+    }
 })
 
 //update quantity of item in cart
@@ -19,9 +29,20 @@ router.delete("/:productId", (req, res) => {
 });
 
 //clear user's cart
-router.delete("/:userId", (req, res) => {
-  const {userId} = req.params
-  res.status(200).send(`delete request made to /cart/${userId}`)
+router.delete("/", requireUser, async (req, res, next) => {
+  const {userId} = req.user.id
+  if (!req.user) {
+    next({
+      name: "NotLoggedIn",
+      message: "You must be logged in to clear your cart"
+    })
+  }
+  try {
+    const deleteCart = await clearCart(userId)
+    return deleteCart
+  } catch ({name, message}) {
+    next({name, message})
+  }
 })
 
 //export the routes!
