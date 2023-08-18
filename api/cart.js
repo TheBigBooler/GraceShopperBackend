@@ -4,15 +4,26 @@ const { requireUser } = require("./utils.js");
 const { addToCart,
     removeFromCart,
     clearCart,
-    updateCart } = require("../db/cart.js")
+    updateCart,
+    checkCart } = require("../db/cart.js")
 
 
 //add items to cart
-router.post('/:productId', async (req, res, next) => {
-    
+router.post('/:productId', requireUser, async (req, res, next) => {
+    const {productId} = req.params
+    const userId = req.user.id
+    const { quantity } = req.body
     try {
-      const addedItem = await addToCart(req.body)
-      return addedItem
+      const checkUserCart = await checkCart(userId, productId)
+      if (checkUserCart) {
+        next({
+          name: "AlreadyInCart",
+          message: "That item is already in your cart, update it from your cart menu"
+        })
+      } else {
+      const addedItem = await addToCart(userId, productId, quantity)
+      res.status(200).send(addedItem)
+      }
     } catch ({name, message}) {
       next({name, message})
     }

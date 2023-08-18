@@ -2,7 +2,7 @@ const client = require("./client");
 
 
 //add item to cart
-const addToCart = async ({ userId, productId, quantity }) => {
+const addToCart = async (userId, productId, quantity) => {
     try {
         const { rows: [product]} = await client.query(`
         INSERT INTO cart ("addedBy", "productId", quantity)
@@ -70,11 +70,30 @@ const clearCart = async (userId) => {
     }
 }
 
+//check user's cart before adding item to it
+const checkCart = async (userId, productId) => {
+    try {
+        const {
+          rows: [product],
+        } = await client.query(`
+        SELECT cart.*, products.name, products.price
+        FROM cart
+        JOIN products
+        ON cart."productId"=products.id
+        WHERE "addedBy"=$1 AND "productId"=$2;`,
+        [userId, productId]);
+        return product
+    } catch (error) {
+        return error
+    }
+}
+
 //exports
 module.exports = {
     addToCart,
     removeFromCart,
     clearCart,
     updateCart,
-    userCart
+    userCart,
+    checkCart
 }
