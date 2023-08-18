@@ -30,6 +30,10 @@ router.use("/orders", ordersRouter);
 const reviewsRouter = require("./reviews");
 router.use("/reviews", reviewsRouter);
 
+//admin routes
+const adminRouter = require("./admin");
+router.use("/admin", adminRouter)
+
 
 //export routes!
 module.exports = router;

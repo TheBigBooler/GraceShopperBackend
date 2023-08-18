@@ -1,26 +1,42 @@
 const express = require("express");
 const router = express.Router();
 const { requireUser } = require("./utils.js");
+const { getActiveProducts, getProductById } = require("../db/products.js")
 
-//get all products
-router.get('/', (req, res) => {
-    res.status(200).send('request made to /products')
+//get all active products
+router.get('/', async (req, res, next) => {
+    try {
+        const products = await getActiveProducts()
+        res.status(200).send(products)
+    } catch ({name, message}) {
+        next({name, message})
+    }
 })
 
-// get product by category
-router.get('/:category', (req, res) => {
-    res.status(200).send(`request made to /products/${req.params}`)
+//get product by Id
+router.get('/:productId', async (req, res, next) => {
+    const { productId } = req.params
+    try {
+        const product = await getProductById(productId)
+        if (!product) {
+            next({
+              name: "ProductNotFound",
+              message: "No matching product was found for that ID",
+            });
+        } else if (product.active === false) {
+            next({
+                name: "ProductDiscontinued",
+                message: "That product is no longer carried by our store. We apologize"
+          });
+        } else {
+          res.status(200).send(product);
+        }
+    } catch ({name, message}) {
+        next({name, message})
+    }
 })
 
-//admin add products
-router.post('/', (req, res) => {
-    res.status(200).send("post request made to /products")
-})
 
-//admin edit the products
-router.patch('/:productId', (req, res) => {
-    res.status(200).send(`post request made to /products${req.params}`)
-})
 
 //export the routes!
 module.exports = router;

@@ -11,7 +11,6 @@ const dropTables = async () => {
   DROP TABLE IF EXISTS reviews;
   DROP TABLE IF EXISTS order_products;
   DROP TABLE IF EXISTS orders;
-  DROP TABLE IF EXISTS guest_cart;
   DROP TABLE IF EXISTS cart;
   DROP TABLE IF EXISTS products;
   DROP TABLE IF EXISTS users;
@@ -50,11 +49,6 @@ const createTables = async () => {
         CREATE TABLE cart (
             id SERIAL PRIMARY KEY,
             "addedBy" INTEGER REFERENCES users(id),
-            "productId" INTEGER REFERENCES products(id),
-            quantity INTEGER
-        );
-        CREATE TABLE guest_cart (
-            id SERIAL PRIMARY KEY,
             "productId" INTEGER REFERENCES products(id),
             quantity INTEGER
         );
