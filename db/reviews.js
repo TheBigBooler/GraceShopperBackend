@@ -31,7 +31,7 @@ async function deleteReview(id) {
 }
 
 //Get Reviews by product
-async function reviewByProduct(productId, review) {
+async function reviewByProduct(productId) {
     try{
         const { rows: review } = await client.query(
             'SELECT * FROM reviews WHERE "productId" = $1;',
