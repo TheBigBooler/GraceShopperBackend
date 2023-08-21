@@ -2,7 +2,8 @@ const client = require('../db/client')
 const express = require("express");
 const router = express.Router();
 const { requireAdmin } = require("./utils.js");
-
+const { getAllProducts, addProduct, changeProductInventory, getProductById, deleteProduct } = require('../db/products')
+const { getAllOrders, updateOrderStatus, getOrderById } = require('../db/orders')
 //api/admin routes
 
 //admin JWT verification
@@ -81,30 +82,130 @@ router.post('/login', async (req, res, next) => {
 })
 
 //admin add products
-router.post('/newproduct', (req, res) => {
-    res.status(200).send("post request made to admin/newproduct")
+router.post('/products/new', requireAdmin, async (req, res, next) => {
+    try {
+        const newProduct = await addProduct(req.body)
+        if (!newProduct) {
+            next({
+                name: "ProductError",
+                message: "Product creation unsuccesful, try again"
+            })
+        } else {
+        res.status(200).send(newProduct)
+        }
+    } catch ({name, message}) {
+        next({name, message})
+    }
 })
 
 //admin view all products
-router.get('/products', requireAdmin, (req, res ) => {
-    res.status(200).send("get request made to admin/products")
+router.get('/products', requireAdmin, async (req, res, next) => {
+    try {
+        const allProducts = await getAllProducts()
+        res.status(200).send(allProducts)
+    } catch ({name, message}) {
+        next({name, message})
+    }
 })
 
-//admin edit the products
-router.patch('/products/:productId', (req, res) => {
+//admin change inventory count
+router.patch('/products/count/:productId', requireAdmin, async (req, res, next) => {
+    const {productId} = req.params
+    const {count} = req.body
+    try {
+        const inventoriedProduct = await changeProductInventory(productId, count)
+        const checkProduct = await getProductById(productId)
+        if (!checkProduct) {
+            next({
+                name: "ProductError",
+                message: "Product not found"
+            })
+        } else {
+            res.status(200).send(inventoriedProduct)
+        }
+    } catch ({name, message}) {
+        next({name, message})
+    }
+})
+
+//admin deactive product
+router.delete('/products/:productId', requireAdmin, async (req, res, next) => {
+    const { productId } = req.params;
+    try {
+      const deletedProduct = await deleteProduct(productId)
+      const checkProduct = await getProductById(productId);
+      if (!checkProduct) {
+        next({
+          name: "ProductError",
+          message: "Product not found",
+        });
+      } else {
+        res.status(200).send(deletedProduct);
+      }
+    } catch ({ name, message }) {
+      next({ name, message });
+    }
+})
+
+//not done yet ************************************************
+//admin edit the product description/price/reactivate
+router.patch('/products/:productId', requireAdmin, async (req, res, next) => {
     const {productId} = req.params
     res.status(200).send(`patch request made to /products${productId}`)
 })
 
 //admin update order status
-router.patch("/orders/:orderId", (req, res) => {
-  res.status(200).send(`patch request made to /orders/${req.params}`);
+router.patch("/orders/:orderId", requireAdmin, async (req, res, next) => {
+    const {orderId} = req.params
+    const {status} = req.body
+    try {
+        const updatedOrder = await updateOrderStatus(orderId, status)
+        const checkOrder = await getOrderById(orderId)
+        if (!checkOrder) {
+            next({
+                name: "OrderError",
+                message: "Order not found"
+            })
+        } else {
+            res.status(200).send(updatedOrder)
+        }
+    } catch ({name, message}) {
+        next({name, message})
+    }
 });
 
 //admin get order history
-router.get('/', (req, res) => {
-    res.status(200).send("get request made to /orders");
+router.get('/orders', requireAdmin, async (req, res, next) => {
+    try {
+        const allOrders = await getAllOrders()
+        if (!allOrders) {
+            next({
+                name: "OrderError",
+            message: "Error retrieving orders"})
+        } else {
+            res.status(200).send(allOrders)
+         }
+    } catch ({name, message}) {
+        next({name, message})   
+    }
 })
 
+//admin get individual order
+router.get('/orders/:orderId', requireAdmin, async (req, res, next) => {
+    const { orderId } = req.params
+    try {
+        const order = await getOrderById(orderId)
+        if (!order.length) {
+            next({
+                name: "OrderError",
+                message: "Order not found"
+            })
+        } else {
+            res.status(200).send(order)
+        }
+    } catch ({name, message}) {
+        next({name, message})
+    }
+})
 
 module.exports = router;

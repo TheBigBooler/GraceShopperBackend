@@ -61,6 +61,7 @@ const addProduct = async ({name, category, description, image, price, inventory}
           `
         INSERT INTO products (name, category, description, image, price, inventory)
         VALUES ($1, $2, $3, $4, $5, $6)
+        ON CONFLICT (name) DO NOTHING
         RETURNING *;`,
           [name, category, description, image, price, inventory]
         );
@@ -85,7 +86,7 @@ const deleteProduct = async (id) => {
 }
 
 //restock/fix inventory for product
-const changeProductInventory = async ({id, count}) => {
+const changeProductInventory = async (id, count) => {
     try {
         const {rows: [updatedCount]} = await client.query(`
         UPDATE products
