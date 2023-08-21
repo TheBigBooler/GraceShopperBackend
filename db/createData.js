@@ -4,9 +4,6 @@ const createInitialUsers = async () => {
     console.log("creating users...");
     try {
         await client.query(`
-        INSERT INTO admins (username, password)
-        VALUES ('admin', 'admin');
-
         INSERT INTO users (email, name, password, address)
         VALUES ('james@james.com', 'james', 'booler', '123 bool street');
 
@@ -21,6 +18,9 @@ const createInitialUsers = async () => {
 
         INSERT INTO users (email, name, password, address)
         VALUES ('albert@albert.com', 'albert', 'bertie123', '321 test drive');
+
+        INSERT INTO admins (username, password)
+        VALUES('admin', 'admin');
         `);
         console.log("Users created!")
     } catch (error) {
@@ -71,37 +71,37 @@ const createInitialOrders = async () => {
         await client.query(`
         INSERT INTO orders (status, "purchasedBy")
         VALUES ('pending', 1);
-        INSERT INTO order_products("orderId", "productId", price)
-        VALUES (1, 1, 500);
-        INSERT INTO order_products("orderId", "productId", price)
-        VALUES (1, 3, 25);
-        INSERT INTO order_products("orderId", "productId", price)
-        VALUES (1, 5, 0);
+        INSERT INTO order_products("orderId", "productId", price, quantity)
+        VALUES (1, 1, 500, 1);
+        INSERT INTO order_products("orderId", "productId", price, quantity)
+        VALUES (1, 3, 25, 3);
+        INSERT INTO order_products("orderId", "productId", price, quantity)
+        VALUES (1, 5, 0, 2);
 
         INSERT INTO orders (status, "purchasedBy")
         VALUES ('pending', 4);
-        INSERT INTO order_products("orderId", "productId", price)
-        VALUES (2, 9, 15);
-        INSERT INTO order_products("orderId", "productId", price)
-        VALUES (2, 10, 35);
-        INSERT INTO order_products("orderId", "productId", price)
-        VALUES (2, 2, 499);
+        INSERT INTO order_products("orderId", "productId", price, quantity)
+        VALUES (2, 9, 15, 2);
+        INSERT INTO order_products("orderId", "productId", price, quantity)
+        VALUES (2, 10, 35, 3);
+        INSERT INTO order_products("orderId", "productId", price, quantity)
+        VALUES (2, 2, 499, 1);
 
         INSERT INTO orders (status, "purchasedBy")
         VALUES ('complete', 5);
-        INSERT INTO order_products("orderId", "productId", price)
-        VALUES (3, 1, 500);
-        INSERT INTO order_products("orderId", "productId", price)
-        VALUES (3, 2, 499);
-        INSERT INTO order_products("orderId", "productId", price)
-        VALUES (3, 3, 1);
-        INSERT INTO order_products("orderId", "productId", price)
-        VALUES (3, 4, 1);
+        INSERT INTO order_products("orderId", "productId", price, quantity)
+        VALUES (3, 1, 500, 1);
+        INSERT INTO order_products("orderId", "productId", price, quantity)
+        VALUES (3, 2, 499, 1);
+        INSERT INTO order_products("orderId", "productId", price, quantity)
+        VALUES (3, 3, 1, 10);
+        INSERT INTO order_products("orderId", "productId", price, quantity)
+        VALUES (3, 4, 1, 4);
 
         INSERT INTO orders (status, "purchasedBy")
         VALUES ('cancelled', 5);
-        INSERT INTO order_products("orderId", "productId", price)
-        VALUES (4, 7, 100);
+        INSERT INTO order_products("orderId", "productId", price, quantity)
+        VALUES (4, 7, 100, 1);
         `);
         console.log("Orders created!");
     } catch (error) {

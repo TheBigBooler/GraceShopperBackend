@@ -1,11 +1,15 @@
 const client = require("./client");
+const { decreaseInventory } = require('./products')
 
 //helper to attach products to individual order
 const attachProductsToOrder = async (order) => {
     try {
-        const {rows: orderProducts} = await client.query(`
-        SELECT * FROM order_products
-        WHERE "orderId"=${order.id};`)
+        const { rows: orderProducts } = await client.query(`
+        SELECT order_products.*, products.name 
+        FROM order_products
+        JOIN products
+        ON order_products."productId"=products.id
+        WHERE "orderId"=${order.id};`);
         // console.log(order)
         return orderProducts
     } catch (error) {
@@ -46,6 +50,33 @@ const getOrderById = async (orderId) => {
     }
 }
 
+//create order, array of products [productId, price]
+const createOrder = async (userId, products) => {
+    try {
+        const {
+          rows: [order],
+        } = await client.query(`
+        INSERT INTO orders ("purchasedBy")
+        VALUES (${userId})
+        RETURNING *;`
+        );
+        const createdOrderId = order.id
+        //then add the products to the order_products table
+        products.map(async (product) => {
+            const {rows: [addedProduct]} = await client.query(`
+            INSERT INTO order_products ("orderId", "productId", price, quantity)
+            VALUES ($1, $2, $3, $4);`,
+            [createdOrderId, product.productId, product.price, product.quantity])
+            await decreaseInventory(product.productId, product.quantity);
+            return addedProduct
+        });
+        //send back created order info
+        const createdOrder = await getOrderById(createdOrderId)
+        return createdOrder
+    } catch (error) {
+        return error
+    }
+}
 
 //admin *************
 //view all orders
@@ -80,5 +111,6 @@ module.exports = {
     getAllOrders,
     getOrderHistory,
     getOrderById,
-    updateOrderStatus
+    updateOrderStatus,
+    createOrder
 }

@@ -37,7 +37,7 @@ const getActiveProducts = async () => {
 }
 
 //decrease inventory when item is purchased
-const decreaseInventory = async ({id, quantity}) => {
+const decreaseInventory = async (id, quantity) => {
     try {
         const {rows: [purchasedProduct]} = await client.query(`
         UPDATE products

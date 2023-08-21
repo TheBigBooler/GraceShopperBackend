@@ -7,19 +7,20 @@ const dropTables = async () => {
   console.log("Dropping tables...");
 
   await client.query(`
-  DROP TABLE IF EXISTS admins;
   DROP TABLE IF EXISTS reviews;
   DROP TABLE IF EXISTS order_products;
   DROP TABLE IF EXISTS orders;
   DROP TABLE IF EXISTS cart;
   DROP TABLE IF EXISTS products;
   DROP TABLE IF EXISTS users;
+  DROP TABLE IF EXISTS admins;
   `);
 
 console.log("Finished dropping tables")
 
  } catch (error) {
   console.error("Error dropping tables!");
+  console.log(error)
  }
 }
 
@@ -62,7 +63,8 @@ const createTables = async () => {
             id SERIAL PRIMARY KEY,
             "orderId" INTEGER REFERENCES orders(id),
             "productId" INTEGER REFERENCES products(id),
-            price INTEGER
+            price INTEGER,
+            quantity INTEGER
         );
         CREATE TABLE reviews (
             id SERIAL PRIMARY KEY,
@@ -75,7 +77,7 @@ const createTables = async () => {
             id SERIAL PRIMARY KEY,
             username VARCHAR(255) UNIQUE NOT NULL,
             password VARCHAR(255) NOT NULL
-        )
+        );
         `);
            
 

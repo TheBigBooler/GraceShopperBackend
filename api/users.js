@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 const { requireUser } = require("./utils.js");
 const { register, getUserByEmail, getUserInfo } = require('../db/users.js')
 const { getOrderHistory } = require('../db/orders.js')
+const { userCart } = require('../db/cart.js')
 
 
 //api/users/...
@@ -102,7 +103,19 @@ router.get('/me/orders', requireUser, async (req, res) => {
 // get user's cart
 router.get('/me/cart', requireUser, async (req, res) => {
     const userId = req.user.id;
-    res.status(200).send(`get request made to users/${userId}/cart`)
+    try {
+      const cart = await userCart(userId);
+      if (!cart) {
+        next({
+          name: "CartEmpty",
+          message: "Your cart is empty!"
+        })
+      } else { 
+        res.status(200).send(cart)
+      }
+    } catch ({name, message}) {
+      next({name, message})
+    }
 })
 
 //get user's info
