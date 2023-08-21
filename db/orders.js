@@ -50,7 +50,7 @@ const getOrderById = async (orderId) => {
     }
 }
 
-//create order, array of products [productId, price]
+//create order, array of products [productId, price, quantity] (same information from cart)
 const createOrder = async (userId, products) => {
     try {
         const {

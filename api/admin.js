@@ -147,7 +147,7 @@ router.delete('/products/:productId', requireAdmin, async (req, res, next) => {
     }
 })
 
-//not done yet ************************************************
+//not done yet ************************************************ need to make a db function
 //admin edit the product description/price/reactivate
 router.patch('/products/:productId', requireAdmin, async (req, res, next) => {
     const {productId} = req.params
