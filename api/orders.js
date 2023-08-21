@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { requireUser } = require("./utils.js");
-const { createOrder } = require("../db/orders.js")
+const { createOrder, getOrderById } = require("../db/orders.js")
 const { clearCart } = require("../db/cart.js")
 
 
@@ -30,6 +30,23 @@ router.post("/", requireUser, async (req, res, next) => {
   }
 });
 
+//get order by ID
+router.get('/:orderId', requireUser, async (req, res, next) => {
+  const {orderId} = req.params
+  try {
+    const order = await getOrderById(orderId)
+    if (!order.id) {
+      next({
+        name: "OrderError",
+        message: "Order not found"
+      })
+    } else {
+      res.status(200).send(order)
+    }
+  } catch ({name, message}) {
+    next({name, message})
+  }
+})
 
 
 //export the routes!
