@@ -1,11 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const { requireUser } = require("./utils.js");
-const { createOrder } = require("../db/orders.js")
+const { createOrder, getOrderById } = require("../db/orders.js")
 const { clearCart } = require("../db/cart.js")
 
 
-//create order 
+//create order (gets user from token, expects an [array of products] passed in -- the information contained in the cart products will work passed to this function)
 router.post("/", requireUser, async (req, res, next) => {
   const userId = req.user.id
   const products = req.body.products
@@ -30,6 +30,23 @@ router.post("/", requireUser, async (req, res, next) => {
   }
 });
 
+//get order by ID 
+router.get('/:orderId', requireUser, async (req, res, next) => {
+  const {orderId} = req.params
+  try {
+    const order = await getOrderById(orderId)
+    if (!order.id) {
+      next({
+        name: "OrderError",
+        message: "Order not found"
+      })
+    } else {
+      res.status(200).send(order)
+    }
+  } catch ({name, message}) {
+    next({name, message})
+  }
+})
 
 
 //export the routes!

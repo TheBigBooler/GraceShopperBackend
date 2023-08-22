@@ -50,7 +50,7 @@ const getOrderById = async (orderId) => {
     }
 }
 
-//create order, array of products [productId, price]
+//create order, array of [products] {productId, price, quantity} (same information from cart); then decreases inventory based on purchased items
 const createOrder = async (userId, products) => {
     try {
         const {
@@ -81,7 +81,7 @@ const createOrder = async (userId, products) => {
 //admin *************
 //view all orders
 const getAllOrders = async () => {
-    try {const allOrders = await client.query(`
+    try {const { rows:allOrders } = await client.query(`
         SELECT * FROM orders;`)
 
         return allOrders
@@ -91,9 +91,9 @@ const getAllOrders = async () => {
 }
 
 //update order status
-const updateOrderStatus = async ({orderId, status}) => {
+const updateOrderStatus = async (orderId, status) => {
     try {
-        const updatedOrder = await client.query(`
+        const {rows: [updatedOrder]} = await client.query(`
         UPDATE orders
         SET status=$1
         WHERE id=$2

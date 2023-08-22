@@ -13,7 +13,14 @@ const requireUser = (req, res, next) => {
 
 //middleware to check for admin
 const requireAdmin = (req, res, next) => {
+  if(!req.admin) {
+    next({
+      name: "InvalidPrivileges",
+      message: "You must be logged in as an administrator to perform this action"
+    })
+  }
 
+  next();
 }
 
 module.exports = { requireUser, requireAdmin };
