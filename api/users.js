@@ -89,7 +89,7 @@ router.post('/login', async (req, res, next) => {
     }
 })
 
-//get users orders
+//get users orders (uses token to discern user for request)
 router.get('/me/orders', requireUser, async (req, res) => {
     const userId = req.user.id
     try {
@@ -100,7 +100,7 @@ router.get('/me/orders', requireUser, async (req, res) => {
     }
 })
 
-// get user's cart
+// get user's cart (uses token to discern user for request)
 router.get('/me/cart', requireUser, async (req, res) => {
     const userId = req.user.id;
     try {

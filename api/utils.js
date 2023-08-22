@@ -15,7 +15,7 @@ const requireUser = (req, res, next) => {
 const requireAdmin = (req, res, next) => {
   if(!req.admin) {
     next({
-      name: "InvalidPriveleges",
+      name: "InvalidPrivileges",
       message: "You must be logged in as an administrator to perform this action"
     })
   }

@@ -50,7 +50,7 @@ const getOrderById = async (orderId) => {
     }
 }
 
-//create order, array of products [productId, price, quantity] (same information from cart)
+//create order, array of [products] {productId, price, quantity} (same information from cart); then decreases inventory based on purchased items
 const createOrder = async (userId, products) => {
     try {
         const {

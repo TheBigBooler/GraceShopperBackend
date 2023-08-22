@@ -8,7 +8,7 @@ const { addToCart,
     checkCart } = require("../db/cart.js")
 
 
-//add items to cart
+//add items to cart (request only needs a body object with a quantity key, product comes from req.params, and user(addedBy) is discerned from token)
 router.post('/:productId', requireUser, async (req, res, next) => {
     const {productId} = req.params
     const userId = req.user.id
@@ -34,8 +34,9 @@ router.post('/:productId', requireUser, async (req, res, next) => {
     }
 })
 
-//update quantity of item in cart
-router.patch("/:id", requireUser, async (req, res, next) => {
+//update quantity of item in cart (request only needs a body object with a quantity key, /:id is the **id from cart table AKA cart.product.id**, not the productId)
+//use front end to check quantity added to cart doesn't exceed inventory on hand BEFORE making request
+router.patch("/item/:id", requireUser, async (req, res, next) => {
   const {id} = req.params
   const { quantity } = req.body
   try {
@@ -54,8 +55,9 @@ router.patch("/:id", requireUser, async (req, res, next) => {
   
 });
 
-//remove from cart
-router.delete("/:id", requireUser, async (req, res, next) => {
+//remove from cart (request uses **id from cart table AKA cart.product.id**, not the productId)
+//use front end to check quantity added to cart doesn't exceed inventory on hand BEFORE making request
+router.delete("/item/:id", requireUser, async (req, res, next) => {
   const {id} = req.params
   try {
     const removedCartItem = await removeFromCart(id)
@@ -70,7 +72,7 @@ router.delete("/:id", requireUser, async (req, res, next) => {
   }
 });
 
-//clear user's cart
+//clear user's cart (basic delete request, discerns user from token)
 router.delete("/", requireUser, async (req, res, next) => {
   const userId = req.user.id
   try {
