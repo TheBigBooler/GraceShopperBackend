@@ -100,6 +100,33 @@ const changeProductInventory = async (id, count) => {
     }
 }
 
+//edit product info
+const updateProduct = async ({id, ...fields}) => {
+    console.log(fields)
+    const newString = Object.keys(fields)
+      .map((key, index) => `"${key}"=$${index + 1}`)
+      .join(",");
+      try {
+        if (newString.length > 0) {
+          const {
+            rows: [updatedProduct],
+          } = await client.query(
+            `
+      UPDATE products
+      SET ${newString}
+      WHERE id=${id}
+      RETURNING *;
+      `,
+            Object.values(fields)
+          );
+          return updatedProduct;
+        }
+      } catch (error) {
+        console.log("error updating product");
+        return error;
+      }
+}
+
 
 
 //exports
@@ -110,5 +137,6 @@ module.exports = {
     deleteProduct,
     changeProductInventory,
     decreaseInventory,
-    getProductById
+    getProductById,
+    updateProduct
 }
