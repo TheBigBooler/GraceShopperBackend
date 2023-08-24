@@ -1,10 +1,10 @@
 const client = require("./client");
 
 // Create a review
-async function review({userId, orderId, productId, description}) {
+async function createReview({userId, orderId, productId, description}) {
     try {
     const {rows: [review]} = await client.query (`
-      INSERT INTO reviews ("userId", "orderId", "productId", description) VALUES ($1, $2, $3, $4) RETURNING *;`,
+      INSERT INTO reviews (reviewer, "orderId", "productId", description) VALUES ($1, $2, $3, $4) RETURNING *;`,
       [userId, orderId, productId, description]
     );
     return review;
@@ -58,11 +58,28 @@ const reviewById = async (reviewId) => {
     }
 }
 
+// Edit review 
+const editedReview = async (reviewId, description)=> {
+  try { const { rows: [updatedReview],} = await client.query
+('UPDATE reviews SET description=$2 WHERE id=$1 RETURNING *;', [reviewId, description]);
+
+return updatedReview;
+} catch(error) {
+  return error;
+}
+}
+
+
+
+
+
+
 
 
 module.exports = {
-    review,
+    createReview,
     deleteReview,
     reviewByProduct,
-    reviewById
+    reviewById,
+    editedReview
 }
