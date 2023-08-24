@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { requireUser } = require("./utils.js");
-const { review, deleteReview, reviewByProduct, reviewById} = require("../db/reviews.js")
+const { createReview, deleteReview, reviewByProduct, reviewById, editedReview,} = require("../db/reviews.js")
 
 
 //get reviews by product
@@ -25,16 +25,16 @@ router.get("/:productId", async(req, res, next) => {
   
 
 //create review
-router.post('/', async(req, res, next) => {
+router.post('/', requireUser, async(req, res, next) => {
     
-})
 try{
   const createdReview = await createReview({
-    madeBy: req.user.id,
-    product: req.product.id,
-    review: req.body.review
+    userId: req.user.id,
+    orderId: req.body.orderId,
+    productId: req.body.productId,
+    description: req.body.description
   });
-  if (!crreatedReview) {
+  if (!createdReview) {
     next({
       name: "Review not created",
       message: "Review could not be made, try again"
@@ -45,7 +45,9 @@ try{
  
 } catch ({error, name, message}) {
   next ({ error, name, message});
+  
 }
+})
 
 
 
@@ -54,12 +56,13 @@ try{
 //edit review
 router.patch("/:reviewId", async(req, res) => {
   
-});
-const editedReview = await editReview ({
+
+const editReview = await editedReview ({
   name: req.body.name,
   message: req.body.review
 });
-res.status(200).send(editedReview);
+res.status(200).send(editReview);
+})
 
 
 
@@ -67,24 +70,25 @@ res.status(200).send(editedReview);
 
 
 //delete review
-router.delete("/:reviewId", async(req, res, next) => {
+router.delete("/:reviewId",requireUser, async(req, res, next) => {
   
-});
+
 try {
-  const  { reviewId} = req.params
-  const reviewMaker = await getReviewById(reviewId)
-  if (reviewMaker.userId !== req.user.id) {
+  const  {reviewId} = req.params
+  const reviewMaker = await reviewById(reviewId)
+  if (reviewMaker.reviewer !== req.user.id) {
     res.status(403).send({
       name: "Invalid User",
       message: 'User ${req.user.userId} can not delte'
     })
   }
-  const {deletedReview} = await deleteReview(reviewId);
+  const deletedReview = await deleteReview(reviewId);
   res.status(200).send(deletedReview);
 
 } catch ({error, name, message}) {
   next ({error, name, message})
 }
+})
 
 
 //export the routes!
