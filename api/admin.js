@@ -2,7 +2,7 @@ const client = require('../db/client')
 const express = require("express");
 const router = express.Router();
 const { requireAdmin } = require("./utils.js");
-const { getAllProducts, addProduct, changeProductInventory, getProductById, deleteProduct } = require('../db/products')
+const { getAllProducts, addProduct, changeProductInventory, getProductById, deleteProduct, updateProduct } = require('../db/products')
 const { getAllOrders, updateOrderStatus, getOrderById } = require('../db/orders')
 //api/admin routes
 
@@ -108,6 +108,23 @@ router.get('/products', requireAdmin, async (req, res, next) => {
     }
 })
 
+//admin view of indiviaul product
+router.get('/products/:productId', requireAdmin, async (req, res, next) => {
+  const {productId} = req.params
+  try {
+    const product = await getProductById(productId)
+    if (!product) {
+      next ({
+        name: "ProductError",
+        message: "Product not found"
+      })
+    } else {
+      res.status(200).send(product)
+    }
+  } catch ({name, message}) {
+    next({name, message})
+  }
+})
 //admin change inventory count
 router.patch('/products/count/:productId', requireAdmin, async (req, res, next) => {
     const {productId} = req.params
@@ -117,7 +134,7 @@ router.patch('/products/count/:productId', requireAdmin, async (req, res, next) 
         const checkProduct = await getProductById(productId)
         if (!checkProduct) {
             next({
-                name: "ProductError",
+                name: "Product{name, message}",
                 message: "Product not found"
             })
         } else {
@@ -137,7 +154,7 @@ router.delete('/products/:productId', requireAdmin, async (req, res, next) => {
       if (!checkProduct) {
         next({
           name: "ProductError",
-          message: "Product not found",
+          message: `Product ${productId} not found`
         });
       } else {
         res.status(200).send(deletedProduct);
@@ -147,11 +164,26 @@ router.delete('/products/:productId', requireAdmin, async (req, res, next) => {
     }
 })
 
-//not done yet ************************************************ need to make a db function
 //admin edit the product description/price/reactivate
 router.patch('/products/:productId', requireAdmin, async (req, res, next) => {
     const {productId} = req.params
-    res.status(200).send(`patch request made to /products${productId}`)
+    try {
+      const checkProduct = await getProductById(productId)
+      const updatedProduct = await updateProduct({
+        id: productId, 
+        ...req.body})
+      if (!checkProduct) {
+        next({
+          name: "ProductError",
+          message: `Product ${productId} not found`
+        })
+      } else {
+        res.status(200).send(updatedProduct)
+      }
+
+    } catch ({name, message}) {
+      next({name, message})
+    }
 })
 
 //admin update order status
