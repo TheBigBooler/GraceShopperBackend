@@ -55,12 +55,10 @@ try{
 
 //edit review
 router.patch("/:reviewId", async(req, res) => {
-  
+  const {reviewId} = req.params
+  const {description} = req.body
 
-const editReview = await editedReview ({
-  name: req.body.name,
-  message: req.body.review
-});
+const editReview = await editedReview(reviewId, description)
 res.status(200).send(editReview);
 })
 
