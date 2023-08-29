@@ -20,7 +20,7 @@ const addToCart = async (userId, productId, quantity) => {
 const userCart = async (userId) => {
     try {
         const {rows: cart} = await client.query(`
-        SELECT cart.*, products.name, products.price
+        SELECT cart.*, products.name, products.price, products.inventory
         FROM cart
         JOIN products
         ON cart."productId"=products.id
