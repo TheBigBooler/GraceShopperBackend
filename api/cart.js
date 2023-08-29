@@ -78,7 +78,7 @@ router.delete("/", requireUser, async (req, res, next) => {
   try {
     const deleteCart = await clearCart(userId)
     if (deleteCart) {
-    res.status(200).send("Cart successfully cleared")
+    res.status(200).send({message: "Cart successfully cleared"})
     } else {
       next({
         name: "CartError",
