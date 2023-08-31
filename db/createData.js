@@ -34,34 +34,75 @@ const createInitialProducts = async () => {
     try {
         await client.query(`
         INSERT INTO products (name, category, description, image, price, inventory)
-        VALUES ('playstation5', 'consoles', 'Brand new console from Sony!', 'linktopicture', '500', '5');
+        VALUES ('playstation5', 'consoles', 'Brand new console from Sony!', 'https://picsum.photos/200', '500', '5');
         INSERT INTO products (name, category, description, image, price, inventory)
-        VALUES ('xbox one', 'consoles', 'Brand new console from Microsoft!', 'linktopicture', '499', '10');
+        VALUES ('xbox one', 'consoles', 'Brand new console from Microsoft!', 'https://picsum.photos/200', '499', '10');
 
         INSERT INTO products (name, category, description, image, price, inventory)
-        VALUES ('Ratchet&Clank', 'games', 'Classic action RPG game', 'linktopicture', '50', '25');
+        VALUES ('Ratchet&Clank', 'games', 'Classic action RPG game', 'https://picsum.photos/200', '50', '25');
         INSERT INTO products (name, category, description, image, price, inventory)
-        VALUES ('Call of Duty', 'games', 'Fast paced arcade shooter', 'linktopicture', '40', '69');
+        VALUES ('Call of Duty', 'games', 'Fast paced arcade shooter', 'https://picsum.photos/200', '40', '69');
 
         INSERT INTO products (name, category, description, image, price, inventory)
-        VALUES ('Pikachu (MINT)', 'trading cards', 'Very well taken care of card', 'linktopicture', '2000', '2');
+        VALUES ('Pikachu (MINT)', 'trading cards', 'Very well taken care of card', 'https://picsum.photos/200', '2000', '2');
         INSERT INTO products (name, category, description, image, price, inventory)
-        VALUES ('Squirtle', 'trading cards', 'Has some nacho cheese on the corner, but still a rare card', 'linktopicture', '10', '1');
+        VALUES ('Squirtle', 'trading cards', 'Has some nacho cheese on the corner, but still a rare card', 'https://picsum.photos/200', '10', '1');
 
         INSERT INTO products (name, category, description, image, price, inventory)
-        VALUES ('Kakashi (sharingan revealed)', 'figures', '1:10 scale figurine of Kakashi', 'linktopicture', '100', '7');
+        VALUES ('Kakashi (sharingan revealed)', 'figures', '1:10 scale figurine of Kakashi', 'https://picsum.photos/200', '100', '7');
         INSERT INTO products (name, category, description, image, price, inventory)
-        VALUES ('Chibi Eren Jaeger', 'figures', 'Small, cute version of a not so innocent man. Perfect for a keychain!', 'linktopicture', '5', '20');
+        VALUES ('Chibi Eren Jaeger', 'figures', 'Small, cute version of a not so innocent man. Perfect for a keychain!', 'https://picsum.photos/200', '5', '20');
 
         INSERT INTO products (name, category, description, image, price, inventory)
-        VALUES ('Leaf village headband', 'clothing', 'Look like a true shinobi with this stylish headband', 'linktopicture', '15', '300');
+        VALUES ('Leaf village headband', 'clothing', 'Look like a true shinobi with this stylish headband', 'https://picsum.photos/200', '15', '300');
         INSERT INTO products (name, category, description, image, price, inventory)
-        VALUES ('DemonSlayer shirt', 'clothing', 'Featuring the main cast of Demon Slayer on front, title graphic on the back', 'linktopicture', '35', '130');
+        VALUES ('DemonSlayer shirt', 'clothing', 'Featuring the main cast of Demon Slayer on front, title graphic on the back', 'https://picsum.photos/200', '35', '130');
         `);
         console.log("Products created!");
     } catch (error) {
         console.log("error creating products");
         console.log(error);
+    }
+}
+
+const createInitialCart = async () => {
+    console.log("creating cart items...")
+    try {
+        await client.query(`
+        INSERT INTO cart ("addedBy", "productId", quantity)
+        VALUES (1, 4, 2);
+        INSERT INTO cart ("addedBy", "productId", quantity)
+        VALUES (1, 3, 1);
+        INSERT INTO cart ("addedBy", "productId", quantity)
+        VALUES (1, 1, 2);
+        INSERT INTO cart ("addedBy", "productId", quantity)
+        VALUES (1, 10, 10);
+
+        INSERT INTO cart ("addedBy", "productId", quantity)
+        VALUES (2, 2, 2);
+        INSERT INTO cart ("addedBy", "productId", quantity)
+        VALUES (2, 3, 5);
+        INSERT INTO cart ("addedBy", "productId", quantity)
+        VALUES (2, 4, 5);
+
+        INSERT INTO cart ("addedBy", "productId", quantity)
+        VALUES (3, 9, 100);
+
+        INSERT INTO cart ("addedBy", "productId", quantity)
+        VALUES (4, 5, 1);
+        INSERT INTO cart ("addedBy", "productId", quantity)
+        VALUES (4, 6, 1);
+        INSERT INTO cart ("addedBy", "productId", quantity)
+        VALUES (4, 7, 1);
+
+        INSERT INTO cart ("addedBy", "productId", quantity)
+        VALUES (5, 9, 20);
+        INSERT INTO cart ("addedBy", "productId", quantity)
+        VALUES (5, 10, 20);
+        `);
+    } catch (error) {
+        console.log("error creating cart items")
+        console.log(error)
     }
 }
 
@@ -102,6 +143,13 @@ const createInitialOrders = async () => {
         VALUES ('cancelled', 5);
         INSERT INTO order_products("orderId", "productId", price, quantity)
         VALUES (4, 7, 100, 1);
+
+        INSERT INTO orders (status, "purchasedBy")
+        VALUES ('complete', 2);
+        INSERT INTO order_products("orderId", "productId", price, quantity)
+        VALUES (5, 9, 15, 15);
+        INSERT INTO order_products("orderId", "productId", price, quantity)
+        VALUES (5, 10, 35, 20);
         `);
         console.log("Orders created!");
     } catch (error) {
@@ -110,4 +158,4 @@ const createInitialOrders = async () => {
     }
 }
 
-module.exports = { createInitialUsers, createInitialProducts, createInitialOrders }
+module.exports = { createInitialUsers, createInitialProducts, createInitialOrders, createInitialCart }

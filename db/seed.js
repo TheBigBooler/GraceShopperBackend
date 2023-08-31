@@ -89,7 +89,7 @@ const createTables = async () => {
 }
 
 //reseed database with dummy data
-const {createInitialUsers, createInitialProducts, createInitialOrders } = require('./createData')
+const {createInitialUsers, createInitialProducts, createInitialOrders, createInitialCart } = require('./createData')
 
 const rebuildDB = async () => {
     try {
@@ -97,6 +97,7 @@ const rebuildDB = async () => {
         await createTables();
         await createInitialUsers();
         await createInitialProducts();
+        await createInitialCart();
         await createInitialOrders();
     } catch (error) {
         console.error("Error during rebuild")
