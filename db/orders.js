@@ -40,8 +40,11 @@ const getOrderHistory = async (userId) => {
 const getOrderById = async (orderId) => {
     try {
         const { rows: [ order ]} = await client.query(`
-        SELECT * FROM orders
-        WHERE id=${orderId};`)
+        SELECT orders.*, users.email, users.name
+        FROM orders
+        JOIN users
+        ON orders."purchasedBy"=users.id
+        WHERE orders.id=${orderId};`)
         order.products = await attachProductsToOrder(order)
         console.log(order)
         return order
