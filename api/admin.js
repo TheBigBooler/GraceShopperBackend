@@ -227,7 +227,7 @@ router.get('/orders/:orderId', requireAdmin, async (req, res, next) => {
     const { orderId } = req.params
     try {
         const order = await getOrderById(orderId)
-        if (!order.length) {
+        if (!order) {
             next({
                 name: "OrderError",
                 message: "Order not found"
