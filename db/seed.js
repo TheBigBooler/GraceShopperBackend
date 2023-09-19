@@ -79,7 +79,7 @@ const createTables = async () => {
             password VARCHAR(255) NOT NULL
         );
         `);
-           
+        
 
         console.log("Finished building tables!")
     } catch (error) {
@@ -89,7 +89,7 @@ const createTables = async () => {
 }
 
 //reseed database with dummy data
-const {createInitialUsers, createInitialProducts, createInitialOrders, createInitialCart } = require('./createData')
+const {createInitialUsers, createInitialProducts, createInitialOrders, createInitialCart, createInitialReviews } = require('./createData')
 
 const rebuildDB = async () => {
     try {
@@ -99,6 +99,7 @@ const rebuildDB = async () => {
         await createInitialProducts();
         await createInitialCart();
         await createInitialOrders();
+        await createInitialReviews();
     } catch (error) {
         console.error("Error during rebuild")
         console.log(error)

@@ -158,4 +158,26 @@ const createInitialOrders = async () => {
     }
 }
 
-module.exports = { createInitialUsers, createInitialProducts, createInitialOrders, createInitialCart }
+const createInitialReviews = async () => {
+    try {
+        await client.query(`
+        INSERT INTO reviews (reviewer, "orderId", "productId", description)
+        VALUES (1, 1, 3, 'Amazing game! recommended to all gamers');
+        INSERT INTO reviews (reviewer, "orderId", "productId", description)
+        VALUES (4, 2, 9, 'Makes me feel like a real ninja. Sizing is spot on!');
+        INSERT INTO reviews (reviewer, "orderId", "productId", description)
+        VALUES (5, 3, 1, 'I should have gotten the Xbox instead');
+        INSERT INTO reviews (reviewer, "orderId", "productId", description)
+        VALUES (5, 4, 7, 'It was not as cool in real life as the picture :(');
+        INSERT INTO reviews (reviewer, "orderId", "productId", description)
+        VALUES (2, 5, 10, 'I ordered a large but it fits like a small! Please check your sizing chart Empire Gaming');
+        INSERT INTO reviews (reviewer, "orderId", "productId", description)
+        VALUES (4, 2, 2, 'amazing console despite looking like a fridge. love it!');
+        `);
+    } catch (error) {
+        console.log("error creating reviews")
+        console.log(error)
+    }
+}
+
+module.exports = { createInitialUsers, createInitialProducts, createInitialOrders, createInitialCart, createInitialReviews }
