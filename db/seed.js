@@ -1,7 +1,7 @@
 const client = require("./client");
 
 console.log("seed running");
-
+//delete all tables before recreating
 const dropTables = async () => {
     try {
   console.log("Dropping tables...");
@@ -24,7 +24,7 @@ console.log("Finished dropping tables")
  }
 }
 
-
+//table definitions, rebuild DB
 const createTables = async () => {
     try {
         console.log("Building tables...")

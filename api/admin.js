@@ -4,6 +4,7 @@ const router = express.Router();
 const { requireAdmin } = require("./utils.js");
 const { getAllProducts, addProduct, changeProductInventory, getProductById, deleteProduct, updateProduct } = require('../db/products')
 const { getAllOrders, updateOrderStatus, getOrderById } = require('../db/orders')
+const { getAllReviews } = require('../db/reviews')
 //api/admin routes
 
 //admin JWT verification
@@ -238,6 +239,23 @@ router.get('/orders/:orderId', requireAdmin, async (req, res, next) => {
     } catch ({name, message}) {
         next({name, message})
     }
+})
+
+//admin view all reviews
+router.get('/reviews', requireAdmin, async (req, res, next) => {
+  try {
+    const reviews = await getAllReviews();
+    if(!reviews) {
+      next({
+        name: "ReviewsError",
+        message: "Reviews could not be retrieved"
+      })
+    } else {
+      res.status(200).send(reviews)
+    }
+  } catch ({name, message}) {
+    next({name, message})
+  }
 })
 
 module.exports = router;

@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const { requireUser } = require("./utils.js");
 const { getActiveProducts, getProductById } = require("../db/products.js")
+const { reviewByProduct } = require("../db/reviews.js")
 
 //get all active products
 router.get('/', async (req, res, next) => {
@@ -17,7 +17,10 @@ router.get('/', async (req, res, next) => {
 router.get('/:productId', async (req, res, next) => {
     const { productId } = req.params
     try {
-        const product = await getProductById(productId)
+        const product = await getProductById(productId);
+        const productReviews = await reviewByProduct(productId);
+        //attach reviews as an iterable array for individual product
+        product.reviews = productReviews;
         if (!product) {
             next({
               name: "ProductNotFound",
